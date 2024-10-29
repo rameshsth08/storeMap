@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.Default.css"
+    />
+  </head>
+  <body>
+    <div class="container-fluied nepal">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="store-list"></div>
+        </div>
+        <div class="col-md-9">
+          <div class="storeMap-container">
+            <div id="storeMap"> </div>
+            <button id="resetViewButton" class=" btn btn-primary resetViewButton">Reset View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js"></script>
+    <script>
+      const xAxisCategories = ['Sales Value', 'Stock Value'];
+     
+       let points = [
+           [27.704828, 85.307439, "Galaxy Liquor", "Hanuman Dhoka Road, Kathmandu - 24", [10, 20], "pie"],
+           [27.717245, 85.323960, "Samip Traders", "Durbar Square, Kathmandu", [15, 25], "bar"],
+           [27.693425, 85.321045, "New Raj Suppliers", "Swayambhu, Kathmandu", [20, 30], "column"],
+           [27.703546, 85.291049, "Aditi & Adish Stores & Suppliers", "Boudha, Kathmandu", [25, 35], "bar"],
+           [27.710636, 85.327074, "Sagarmatha Marketing Pvt. Ltd.", "Pashupati, Kathmandu", [30, 40], "bar"],
+           [27.709563, 85.329776, "Bidari Enterprises Pvt. Ltd.", "Thamel, Kathmandu", [12, 22], "bar"],
+           [27.713960, 85.327221, "Shree Barahi Traders", "Thamel, Kathmandu", [18, 28], "bar"],
+           [27.701399, 85.300140, "The National Museum of Nepal", "Chhauni, Kathmandu", [10, 20], "bar"],
+           [27.691688, 85.327027, "Kopan Monastery", "Kopan, Kathmandu", [15, 25], "bar"],
+           [27.691382, 85.300320, "Bidari Distributors Pvt. Ltd.", "Swayambhu, Kathmandu", [8, 18], "bar"],
+           [27.688016, 85.324424, "A & P Khadya Suppliers", "Boudhanath, Kathmandu", [25, 35], "bar"],
+           [27.719214, 85.316056, "Laxmi Store", "Bhimsen Marga, Kathmandu", [12, 22], "bar"],
+           [27.712890, 85.313303, "Jor Ganesh Khadhyana Stores", "Bhaktapur Durbar Square", [20, 30], "bar"],
+           [27.706008, 85.285610, "Godawari Marketing Pvt. Ltd.", "Chandragiri, Kathmandu", [35, 45], "bar"],
+           [27.704774, 85.317140, "Durbar High School", "Dharma Raj Thapa Marga, Kathmandu", [8, 18], "bar"],
+           [27.675124, 85.322858, "Bhaktapur Durbar Square", "Bhaktapur, Kathmandu", [20, 30], "bar"],
+           [27.690368, 85.318537, "Seto Machindranath Temple", "Lalitpur, Kathmandu", [15, 25], "bar"],
+           [27.700619, 85.327086, "Taleju Temple", "Durbar Square, Kathmandu", [20, 30], "bar"],
+           [27.707161, 85.321145, "Mangal Bazar", "Patan, Kathmandu", [12, 22], "bar"],
+           [27.672555, 85.328162, "Nagarkot", "Bhaktapur, Kathmandu", [30, 40], "bar"],
+           [27.682051, 85.315112, "Patan Museum", "Patan, Kathmandu", [15, 25], "bar"],
+           [27.707364, 85.317149, "Sundarijal", "Sundarijal, Kathmandu", [25, 35], "bar"],
+           [27.703701, 85.315078, "Narayanhiti Palace Museum", "Dharma Raj Thapa Marga, Kathmandu", [20, 30], "bar"],
+           [27.690081, 85.323674, "Bhaktapur Pottery Square", "Bhaktapur, Kathmandu", [12, 22], "bar"],
+           [27.713623, 85.298767, "Kirtipur", "Kirtipur, Kathmandu", [15, 25], "bar"],
+           [27.684038, 85.335533, "Godavari Botanical Garden", "Godavari, Kathmandu", [30, 40], "bar"],
+           [27.678033, 85.333396, "Sundarijal Waterfall", "Sundarijal, Kathmandu", [25, 35], "bar"],
+           [27.718428, 85.324415, "Shivapuri Nagarjun National Park", "Budhanilkantha, Kathmandu", [20, 30], "bar"],
+           [27.689187, 85.307128, "Rani Pokhari", "Rani Pokhari, Kathmandu", [10, 20], "bar"],
+           [27.699988, 85.320112, "Tihar Festival Celebration", "Kathmandu", [5, 15], "bar"],
+           [27.700421, 85.296938, "Budhanilkantha Temple", "Budhanilkantha, Kathmandu", [15, 25], "bar"],
+           [27.669417, 85.293832, "Bhaktapur Durbar Square", "Bhaktapur, Kathmandu", [20, 30], "bar"],
+           [27.682832, 85.321551, "Pashupati Temple", "Pashupati, Kathmandu", [30, 40], "bar"],
+           [27.706644, 85.306388, "Kirtipur Dhoka", "Kirtipur, Kathmandu", [15, 25], "bar"],
+           [27.694949, 85.330273, "Patan Durbar Square", "Patan, Kathmandu", [20, 30], "bar"],
+           [27.691865, 85.317710, "Chabahil", "Chabahil, Kathmandu", [10, 20], "bar"],
+           [27.675653, 85.309805, "Sankhu", "Sankhu, Kathmandu", [12, 22], "bar"],
+           [27.677918, 85.320061, "Gokarna Forest", "Gokarna, Kathmandu", [30, 40], "bar"],
+           [27.709116, 85.327065, "Kopan Monastery", "Kopan, Kathmandu", [20, 30], "bar"],
+           [27.701870, 85.323278, "Nepal Art Council", "Bhanimandal, Kathmandu", [10, 20], "bar"],
+           [27.671908, 85.295222, "Swayambhunath", "Swayambhu, Kathmandu", [25, 35], "bar"],
+           [27.700279, 85.292846, "Manjushree Park", "Kirtipur, Kathmandu", [18, 28], "bar"],
+           [27.715296, 85.317716, "Singha Durbar", "Singha Durbar, Kathmandu", [12, 22], "bar"],
+           [27.677705, 85.322186, "Budhanilkantha", "Budhanilkantha, Kathmandu", [15, 25], "bar"],
+           [27.706389, 85.294133, "Bhaktapur Museum", "Bhaktapur, Kathmandu", [20, 30], "bar"],
+           [27.719715, 85.315263, "Thimi", "Thimi, Kathmandu", [12, 22], "bar"],
+           [27.703276, 85.302316, "Gorkha Palace", "Gorkha, Kathmandu", [30, 40], "bar"]
+       ];
+
+     var map = L.map(document.getElementById('storeMap'), {
+       center: [27.700956, 85.311785],
+       zoom: 14,
+       layers: new L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+         attribution: "<a href='https://www.google.com/maps'>Google Map</a> | Akasya &copy; 2018"
+       }),
+       zoomControl: false
+     });
+     var icon = L.icon({iconUrl:'icon.png'});
+
+     let markers = L.markerClusterGroup();
+let markerList = [];
+
+// Function to create a chart
+function createChart(containerId, data, type) {
+ Highcharts.chart(containerId, {
+   chart: {
+     type: type,
+     height: 150 // Adjust height to fit within popup
+   },
+   title: {
+     text: null
+   },
+   credits: {
+       enabled: false
+   },
+   xAxis: {
+     categories: xAxisCategories,
+     gridLineWidth: 1,
+     lineWidth: 0
+   },
+   yAxis: {
+     title: {
+       text: null
+     },
+     gridLineWidth: 0 // Remove grid lines if desired
+   },
+   legend: {
+     enabled: false // Hide legend
+   },
+   plotOptions: {
+     series: {
+       dataLabels: {
+         enabled: true // Hide data labels
+       }
+       //pointWidth: 10 // Control bar width
+     }
+   },
+   series: [{
+     name: 'Data',
+     data: data
+   }]
+ });
+}
+
+// Add markers with popups containing charts
+points.forEach((point, index) => {
+ const [lat, lng, title, address, chartData, chartType] = point;
+ const popupContent = `
+   <div class="store-popup-modal">
+     <div class="store-popup-header">
+       <h5>${title}</h5>
+       <p>${address}</p>
+     </div>
+     <div id="chart-container-${index}" style="width: 300px; height: 170px;"></div>
+   </div>
+ `;
+
+ const marker = L.marker([lat, lng],{icon:icon})
+   .bindPopup(popupContent)
+   .on('popupopen', () => {
+     // Create chart when the popup is opened, passing in data and chart type
+     createChart(`chart-container-${index}`, chartData, chartType);
+   });
+
+ markerList.push(marker);
+ markers.addLayer(marker);
+});
+
+// Add all markers to the map
+map.addLayer(markers);
+
+
+
+     // Add list of markers
+       const markerCluster = document.querySelector(".store-list");
+       markerCluster.insertAdjacentElement("beforeend", document.createElement("ul"));
+
+       // add list of markers to markercluster
+       points.map((point, index) => {
+         const [lat, lng, title, address] = point;
+         const li = document.createElement("li");
+         li.innerHTML = `
+         <a href="#" data-index="${index}">
+           <div class="store-item">
+              <h3>${title}</h3>
+              <p class="store-address">${address}</p>
+              <p class="store-type">Secondary</p>
+           </div>
+         </a>
+         `;
+         markerCluster.querySelector("ul").appendChild(li);
+       });
+
+       // add event listener to list of markers
+
+       document.addEventListener("click", (e) => {
+         // Use closest to ensure we're selecting the correct <a> element with data-index
+         const linkElement = e.target.closest(".store-list ul li a");
+         if (!linkElement) return; // Exit if no relevant link element is found
+         
+         e.preventDefault();
+         const index = linkElement.dataset.index; // Get data-index from the <a> element
+         const marker = markerList[index]; // Access the corresponding marker
+         
+         // Zoom to show the marker and open the popup
+         markers.zoomToShowLayer(marker, () => {
+           marker.openPopup();
+         });
+       });
+
+      
+
+       // Add an event listener to the reset button
+     document.getElementById("resetViewButton").addEventListener("click", () => {
+       map.setView([27.688380, 85.335101], 14); // Reset map view
+     });
+   </script>
+  </body>
+</html>
